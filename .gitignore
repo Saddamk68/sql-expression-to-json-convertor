@@ -1,6 +1,7 @@
 # Environments
 .env
 .venv
+.vscode
 env/
 venv/
 ENV/
@@ -11,3 +12,7 @@ venv.bak/
 __pycache__/
 
 .pytest_cache/
+
+# Distribution / packaging
+build/
+dist/
