@@ -9,7 +9,7 @@ from app.service.supported_sql_functions import SUPPORTED_SQL_TRANSFORMATIONS
 logger = logging.getLogger(__name__)
 
 function_pattern = r"([A-Za-z_]\w*)\s*\((.*)\)" # Matches function names like TRIM, UPPER etc.
-operator_pattern = r"NOT IN|IN|IS NOT NULL|IS NULL|<>|!=|=|<=|>=|<|>"  # Matches operators like =, <, >, != etc.
+operator_pattern = r"\bNOT IN\b|\bIN\b|\bIS NOT NULL\b|\bIS NULL\b|<>|!=|=|<=|>=|<|>"  # Matches operators like =, <, >, != etc.
 static_value_pattern = r'"([^"]*)"|(\d+)|NULL|null'  # Matches static values like 'abc', 123, 45.67 etc.
 logical_operator_pattern = r"\b(AND|OR)\b"  # Matches logical operators like AND, OR
 
@@ -195,10 +195,9 @@ def parse_condition(condition: str) -> dict:
     condition_json = {"transformations": []}
     
     # Match comparision operators
-    operator_match = re.search(operator_pattern, condition, flags=re.IGNORECASE)
+    operator_match = re.search(operator_pattern, condition)
     if operator_match:
-        operator = operator_match.group(0).upper()
-        condition_json["operator"] = operator
+        condition_json["operator"] = operator_match.group(0)
         
         # Split the condition into left and right parts
         operator_start_index = condition.find(operator_match.group(0))
