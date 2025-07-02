@@ -158,7 +158,8 @@ def parse_conditions(expression: str, conditions: list) -> None:
                         expression = expression[i + 1:].strip()
                         break
             else:
-                raise InvalidRequestException("Unmatched opening parenthesis in the SQL expression.")
+                logger.error(f"Unmatched opening parenthesis in the SQL expression: {expression}")
+                raise InvalidRequestException("Unmatched opening parenthesis in the SQL expression: {expression}")
         else:
             # Split the expression by logical operators
             match = re.search(logical_operator_pattern, expression, flags=re.IGNORECASE)
@@ -305,6 +306,7 @@ def remove_quotes(value: str) -> str:
 def extract_params_from_function_string(function_args: str, function_name: str) -> dict:
     function_name = function_name.upper()
     if function_name not in SUPPORTED_SQL_TRANSFORMATIONS:
+        logger.error(f"Unsupported SQL function: {function_name}")
         raise InvalidRequestException(f"Unsupported SQL function: {function_name}")
     
     # Extract the parameters using the count
@@ -322,6 +324,7 @@ def extract_params_value(function_args: str, count: int) -> dict:
         comma_index = remaining_args.find(',')
 
         if comma_index == -1:
+            logger.error(f"Invalid parameters provided, expected {count} parameters but got fewer.")
             raise InvalidRequestException(f"Invalid parameters provided, expected {count} parameters but got fewer.")
         
         # Extract the parameter up to the next comma
