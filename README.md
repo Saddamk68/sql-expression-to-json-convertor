@@ -38,8 +38,7 @@ Start the FastAPI server using the following command:
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-- By default, the API will be available at: `http://127.0.0.1:8080`
-- Interactive API docs are available at: `http://127.0.0.1:8000/docs`
+- The API will be available at: `http://127.0.0.1:8080`
 
 ## Usage
 
@@ -61,3 +60,4 @@ This project is licensed under the MIT License.
 - Would you like to include example API requests and responses in the documentation?
 - Should we document the expected structure of the JSON output?
 - Do you want deployment instructions (e.g., Docker, cloud platforms) added?
+
