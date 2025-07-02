@@ -1,33 +1,63 @@
-# FastAPI Template
+# SQL Expression to JSON Converter
 
-This sample repo contains the recommended structure for a Python FastAPI project. In this sample, we use `fastapi` to build a web application and the `pytest` to run tests.
+## Overview
 
-For a more in-depth tutorial, see our [Fast API tutorial](https://code.visualstudio.com/docs/python/tutorial-fastapi).
+**SQL Expression to JSON Converter** is a FastAPI-based web application that allows users to convert simple SQL expressions into their equivalent JSON representations. This tool is designed for developers and data engineers who need to parse and transform SQL queries into a structured JSON format for further processing or integration.
 
-The code in this repo aims to follow Python style guidelines as outlined in [PEP 8](https://peps.python.org/pep-0008/).
+## Features
 
-## Set up instructions
+- Converts simple SQL expressions to JSON format
+- Fast and lightweight API built with FastAPI
+- Easy to integrate into existing workflows
 
-This sample makes use of Dev Containers, in order to leverage this setup, make sure you have [Docker installed](https://www.docker.com/products/docker-desktop).
+## Getting Started
 
-To successfully run this example, we recommend the following VS Code extensions:
+### Prerequisites
 
-- [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-- [Python Debugger](https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy)
-- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) 
+- Python 3.8 or higher
+- pip (Python package manager)
 
-In addition to these extension there a few settings that are also useful to enable. You can enable to following settings by opening the Settings editor (`Ctrl+,`) and searching for the following settings:
+### Installation
 
-- Python > Analysis > **Type Checking Mode** : `basic`
-- Python > Analysis > Inlay Hints: **Function Return Types** : `enable`
-- Python > Analysis > Inlay Hints: **Variable Types** : `enable`
+1. **Clone the repository:**
+    ```sh
+    git clone <repository-url>
+    cd sql-expression-to-json-convertor
+    ```
 
-## Running the sample
-- Open the template folder in VS Code (**File** > **Open Folder...**)
-- Open the Command Palette in VS Code (**View > Command Palette...**) and run the **Dev Container: Reopen in Container** command.
-- Run the app using the Run and Debug view or by pressing `F5`
-- `Ctrl + click` on the URL that shows up on the terminal to open the running application 
-- Test the API functionality by navigating to `/docs` URL to view the Swagger UI
-- Configure your Python test in the Test Panel or by triggering the **Python: Configure Tests** command from the Command Palette
-- Run tests in the Test Panel or by clicking the Play Button next to the individual tests in the `test_main.py` file
+2. **Install dependencies:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+### Running the Application
+
+Start the FastAPI server using the following command:
+
+```sh
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+- By default, the API will be available at: `http://127.0.0.1:8080`
+- Interactive API docs are available at: `http://127.0.0.1:8000/docs`
+
+## Usage
+
+Send a POST request to the API endpoint with your SQL expression to receive the JSON output.
+
+*More detailed API usage examples can be added here if required.*
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for improvements.
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+**Questions for you:**
+- Would you like to include example API requests and responses in the documentation?
+- Should we document the expected structure of the JSON output?
+- Do you want deployment instructions (e.g., Docker, cloud platforms) added?
