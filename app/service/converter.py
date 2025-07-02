@@ -8,7 +8,7 @@ from app.service.supported_sql_functions import SUPPORTED_SQL_TRANSFORMATIONS
 
 logger = logging.getLogger(__name__)
 
-function_pattern = r"([A-Za-z_]\w*)\s*\((.*)\)" # Matches function names like TRIM, UPPER etc.
+function_pattern = r"\b([A-Za-z_]\w*)\s*\((.*)\)" # Matches function names like TRIM, UPPER etc.
 operator_pattern = r"\bNOT IN\b|\bIN\b|\bIS NOT NULL\b|\bIS NULL\b|<>|!=|=|<=|>=|<|>"  # Matches operators like =, <, >, != etc.
 static_value_pattern = r'"([^"]*)"|(\d+)|NULL|null'  # Matches static values like 'abc', 123, 45.67 etc.
 logical_operator_pattern = r"\b(AND|OR)\b"  # Matches logical operators like AND, OR
@@ -195,17 +195,29 @@ def parse_condition(condition: str) -> dict:
     condition_json = {"transformations": []}
     
     # Match comparision operators
-    operator_match = re.search(operator_pattern, condition)
+    operator_match = re.search(operator_pattern, condition, flags=re.IGNORECASE)
     if operator_match:
-        condition_json["operator"] = operator_match.group(0)
+        condition_json["operator"] = operator_match.group(0).upper()
         
         # Split the condition into left and right parts
-        operator_start_index = condition.find(operator_match.group(0))
+        operator_start_match = re.search(
+            rf"(?<!\w){re.escape(operator_match.group(0))}(?!\w)",
+            condition,
+            flags=re.IGNORECASE
+        )
+        operator_start_index = operator_start_match.start()
         operator_substring = condition[operator_start_index + len(operator_match.group(0)):].strip()
 
         condition_json["valueType"] = "string"
 
-        if condition_json["operator"] in {"IS NULL", "IS NOT NULL"}:
+        if condition_json["operator"] in {"IN", "NOT IN"}:
+            # Handle array of values
+            array_match = re.search(r"\(([^)]+)\)", operator_substring)
+            if array_match:
+                values = array_match.group(1).split(',')
+                # Normalize each value in the array by removing quotes
+                condition_json["value"] = [remove_quotes(value.strip()) for value in values]
+        elif condition_json["operator"] in {"IS NULL", "IS NOT NULL"}:
             # Handle IS NULL and IS NOT NULL conditions
             condition_json["value"] = None
         else:
@@ -259,7 +271,7 @@ def parse_condition(condition: str) -> dict:
     condition_json["transformations"] = transformations
 
     # Remove value and valueType if the value is None
-    if condition_json["value"] is None:
+    if condition_json.get("value") is None:
         condition_json.pop("value", None)
         condition_json.pop("valueType", None)
 
