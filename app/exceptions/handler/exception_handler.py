@@ -14,8 +14,8 @@ async def invalid_request_exception_handler(request: Request, exc: InvalidReques
         content={
             "endpoint": request.url.path,
             "timestamp": datetime.utcnow().isoformat(),
-            "status": HTTPStatus.BAD_REQUEST.value,
-            "statusCode": HTTPStatus.BAD_REQUEST.name,
+            "status": HTTPStatus.BAD_REQUEST.phrase,
+            "statusCode": HTTPStatus.BAD_REQUEST.value,
             "message": exc.detail,
         }
     )
