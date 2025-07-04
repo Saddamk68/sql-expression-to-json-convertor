@@ -123,6 +123,23 @@ def fetch_logical_operator(sql_expression: str) -> str:
     Returns:
         str: The logical operator if found, otherwise None.
     """
+    # Check if the sql_expression starts with a logical paranthesis
+    if sql_expression.startswith('('):
+        open_brackets = 0
+        for i, char in enumerate(sql_expression):
+            if char == '(':
+                open_brackets += 1
+            elif char == ')':
+                open_brackets -= 1
+                if open_brackets == 0:
+                    # Closing bracket found, check for logical operator after the closing bracket
+                    remaining_expression = sql_expression[i + 1:].strip()
+                    logical_operator_match = re.search(logical_operator_pattern, remaining_expression, flags=re.IGNORECASE)
+                    return logical_operator_match.group(0).upper() if logical_operator_match else None
+        # If no closing bracket is found, raise an error
+        logger.error(f"Unmatched opening parenthesis in the SQL expression: {sql_expression}")
+        raise InvalidRequestException(f"Unmatched opening parenthesis in the SQL expression: {sql_expression}")
+
     match = re.search(logical_operator_pattern, sql_expression, flags=re.IGNORECASE)
     return match.group(0).upper() if match else None
 
@@ -176,8 +193,8 @@ def parse_conditions(expression: str, conditions: list) -> None:
                 condition_json = parse_condition(condition)
                 
                 # Fetch the logical operator for the condition
-                logical_operator = fetch_logical_operator(condition)
-                condition_json["logical_operator"] = logical_operator or ""
+                # logical_operator = fetch_logical_operator(condition)
+                # condition_json["logical_operator"] = logical_operator or ""
 
                 conditions.append(condition_json)
 
